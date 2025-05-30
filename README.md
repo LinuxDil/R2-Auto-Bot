@@ -22,9 +22,9 @@ R2 Auto Bot Full Fiture
 </p>
 
 **Or via EVM Wallet:**
-
+```bash
 0xec9ab10d8b7A4113018853202C2FDd95072BC81f
-
+```
 > Supported networks: Ethereum, BSC, Arbitrum, Optimism, Polygon, ETC..
 
 ---

@@ -390,9 +390,11 @@ async function addTransactionToQueue(transactionFunction, description = "Transak
 
   transactionQueue = transactionQueue.then(async () => {
     updateTransactionStatus(transactionId, "processing");
+    let normalizedNetwork; 
+    let localProvider; 
     try {
       let config;
-      let normalizedNetwork = network;
+      normalizedNetwork = network; 
       if (!network) {
         normalizedNetwork = currentNetwork;
       }
@@ -418,7 +420,9 @@ async function addTransactionToQueue(transactionFunction, description = "Transak
         throw new Error(`Jaringan tidak dikenal: ${normalizedNetwork || 'tidak diberikan'}`);
       }
 
-      const localProvider = new ethers.JsonRpcProvider(config.RPC_URL);
+      addLog(`NormalizedNetwork disetel ke: ${normalizedNetwork}`, "debug", normalizedNetwork);
+
+      localProvider = new ethers.JsonRpcProvider(config.RPC_URL);
       const localWallet = new ethers.Wallet(process.env.PRIVATE_KEY, localProvider);
 
       let nextNonce;
@@ -547,7 +551,7 @@ function startAutoDailyClaim() {
     if (!claimRunning) {
       claimAllFaucetsWithDelay();
     }
-  },24 * 60 * 60 * 1000 + 2 * 60 * 1000); 
+  },86400000);
   claimAllFaucetsWithDelay();
   addLog("Auto Daily Claim Faucet All Network dimulai.", "system");
   claimFaucetSubMenu.setItems(getClaimFaucetSubMenuItems());
@@ -1825,7 +1829,11 @@ async function autoStakeR2usdSr2usd(amountR2usd, nonce, wallet, provider, config
 }
 
 async function autoAddLpR2usdSr2usd(amountR2usd, nonce, wallet, provider, config) {
+  if (!config) {
+    throw new Error("Config tidak didefinisikan");
+  }
   const network = config.NETWORK_NAME;
+  addLog(`Menambahkan LP untuk ${amountR2usd} R2USD`, "debug", network);
   const amount = parseFloat(amountR2usd);
   if (isNaN(amount) || amount <= 0) {
     throw new Error("Jumlah R2USD harus lebih besar dari 0");
@@ -1905,7 +1913,11 @@ async function autoAddLpR2usdSr2usd(amountR2usd, nonce, wallet, provider, config
 
 
 async function autoAddLpUsdcR2usd(amountUsdc, nonce, wallet, provider, config) {
+  if (!config) {
+    throw new Error("Config tidak didefinisikan");
+  }
   const network = config.NETWORK_NAME;
+  addLog(`Menambahkan LP untuk ${amountUsdc} USDC`, "debug", network);
   const amount = parseFloat(amountUsdc);
   if (isNaN(amount) || amount <= 0) {
     throw new Error("Jumlah USDC harus lebih besar dari 0");
@@ -2107,7 +2119,7 @@ async function runAutoAction(actionFunction, actionName, network) {
       addLog(`${actionName}: Selesai.`, "swap", normalizedNetwork);
     });
   } else {
-    promptBox.readInput(`Masukkan jumlah iterasi untuk ${actionName}`, "", async (err, value) => {
+    promptBox.readInput(`Masukkan jumlah Swap untuk ${actionName}`, "", async (err, value) => {
       promptBox.hide();
       safeRender();
       if (err || !value) {
@@ -2119,7 +2131,7 @@ async function runAutoAction(actionFunction, actionName, network) {
         addLog(`${actionName}: Input harus berupa angka.`, "swap", normalizedNetwork);
         return;
       }
-      addLog(`${actionName}: Mulai ${loopCount} iterasi.`, "swap", normalizedNetwork);
+      addLog(`${actionName}: Mulai ${loopCount} Swap.`, "swap", normalizedNetwork);
 
       if (normalizedNetwork === "Sepolia") {
         swapRunningSepolia = true;
@@ -2172,10 +2184,10 @@ async function runAutoAction(actionFunction, actionName, network) {
               (normalizedNetwork === "BSC" && swapCancelledBSC) ||
               (normalizedNetwork === "Monad" && swapCancelledMonad) ||
               (normalizedNetwork === "Base Sepolia" && swapCancelledBaseSepolia)) {
-            addLog(`${actionName}: Dihentikan pada iterasi ${i}.`, "swap", normalizedNetwork);
+            addLog(`${actionName}: Dihentikan pada Swap ${i}.`, "swap", normalizedNetwork);
             break;
           }
-          addLog(`Memulai iterasi ke-${i}`, "swap", normalizedNetwork);
+          addLog(`Memulai Swap ke-${i}`, "swap", normalizedNetwork);
           const success = await actionFunction(normalizedNetwork);
           if (success) {
             await updateWalletData(normalizedNetwork);
@@ -2184,7 +2196,7 @@ async function runAutoAction(actionFunction, actionName, network) {
             const delayTime = getRandomDelay();
             const minutes = Math.floor(delayTime / 60000);
             const seconds = Math.floor((delayTime % 60000) / 1000);
-            addLog(`Iterasi ke-${i} selesai. Menunggu ${minutes} menit ${seconds} detik.`, "swap", normalizedNetwork);
+            addLog(`Swap ke-${i} selesai. Menunggu ${minutes} menit ${seconds} detik.`, "swap", normalizedNetwork);
             await waitWithCancel(delayTime, "swap", normalizedNetwork);
             if ((normalizedNetwork === "Sepolia" && swapCancelledSepolia) ||
                 (normalizedNetwork === "Arbitrum Sepolia" && swapCancelledArbitrum) ||
@@ -3294,4 +3306,5 @@ screen.key(["C-down"], () => { logsBox.scroll(1); safeRender(); });
 
 safeRender();
 mainMenu.focus();
-addLog("Dont Forget Join Our Telegram https://t.me/airdropseeker_official!!", "system");updateWelcomeBox();
+addLog("Dont Forget To Subscribe YT And Telegram @NTExhaust!!", "system");
+updateWelcomeBox();

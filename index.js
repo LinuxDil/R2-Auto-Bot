@@ -1826,5 +1826,5 @@ screen.key(["C-down"], () => { logsBox.scroll(1); safeRender(); });
 
 safeRender();
 mainMenu.focus();
-addLog("Dont Forget To Subscribe YT And Telegram @NTExhaust!!", "system");
+addLog("Dont Forget To Join our Group!!", "system");
 updateWelcomeBox();

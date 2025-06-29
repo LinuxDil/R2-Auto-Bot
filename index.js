@@ -1508,10 +1508,12 @@ function updateWelcomeBox() {
   const botVersion = "FINAL TESTNET V1.0.0";
   const content = `{center}{bold}{bright-red-fg}[R2 AUTO BOT]{/bright-red-fg}{/bold}{/center}\n\n` +
     `{center}{bold}{bright-yellow-fg}Version : ${botVersion}{/bright-yellow-fg}{/bold}{/center}\n` +
-    `{center}{bold}{bright-cyan-fg}Join Telegram : t.me/AirdropSeeker_Official{/bright-cyan-fg}{/bold}{/center}\n` +
+    `{center}{bold}{bright-cyan-fg}Join Telegram : t.me/AirdropSeeker_Official{/bright-cyan-fg}{/bold}{/center}\n`;
+
   welcomeBox.setContent(content);
   safeRender();
 }
+
 
 function adjustLayout() {
   const screenHeight = screen.height;
